@@ -43,6 +43,13 @@ import 'features/exchanges/domain/usecases/watch_exchanges_usecase.dart';
 import 'features/exchanges/domain/usecases/watch_sessions_usecase.dart';
 import 'features/exchanges/presentation/bloc/exchange_bloc.dart';
 import 'package:skillswap/features/exchanges/domain/usecases/counter_propose_session_usecase.dart';
+import 'features/notifications/data/datasources/notification_remote_datasource.dart';
+import 'features/notifications/data/repositories/notification_repository_impl.dart';
+import 'features/notifications/domain/repositories/notification_repository.dart';
+import 'features/notifications/domain/usecases/create_notification_usecase.dart';
+import 'features/notifications/domain/usecases/mark_notifications_read_usecase.dart';
+import 'features/notifications/domain/usecases/watch_notifications_usecase.dart';
+import 'features/notifications/presentation/bloc/notification_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -159,6 +166,26 @@ Future<void> init() async {
       proposeSession: sl<ProposeSessionUseCase>(),
       updateSessionStatus: sl<UpdateSessionStatusUseCase>(),
       counterProposeSession: sl<CounterProposeSessionUseCase>(),
+      createNotification: sl<CreateNotificationUseCase>(),
+    ),
+  );
+    // Notifications
+  sl.registerLazySingleton<NotificationRemoteDataSource>(
+    () => NotificationRemoteDataSourceImpl(sl<FirebaseFirestore>()),
+  );
+  sl.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(sl<NotificationRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(
+      () => WatchNotificationsUseCase(sl<NotificationRepository>()));
+  sl.registerLazySingleton(
+      () => CreateNotificationUseCase(sl<NotificationRepository>()));
+  sl.registerLazySingleton(
+      () => MarkNotificationsReadUseCase(sl<NotificationRepository>()));
+  sl.registerFactory<NotificationBloc>(
+    () => NotificationBloc(
+      watchNotifications: sl<WatchNotificationsUseCase>(),
+      markRead: sl<MarkNotificationsReadUseCase>(),
     ),
   );
 }

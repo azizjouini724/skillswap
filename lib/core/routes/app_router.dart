@@ -13,6 +13,7 @@ import 'package:skillswap/features/home/presentation/pages/main_shell.dart';
 import 'package:skillswap/features/exchanges/presentation/pages/exchanges_page.dart';
 import 'package:skillswap/features/profile/presentation/pages/profile_page.dart';
 import 'package:skillswap/features/matching/presentation/pages/smart_match_page.dart';
+import 'package:skillswap/features/notifications/presentation/pages/notifications_page.dart';
 GoRouter createRouter(AuthBloc authBloc) {
   return GoRouter(
     initialLocation: AppRoutes.splash,
@@ -60,9 +61,15 @@ GoRouter createRouter(AuthBloc authBloc) {
             MainShell(navigationShell: navigationShell),
         branches: [
           StatefulShellBranch(routes: [
-            GoRoute(
+             GoRoute(
               path: AppRoutes.home,
               builder: (context, state) => const HomePage(),
+              routes: [
+                GoRoute(
+                  path: 'notifications',
+                  builder: (context, state) => const NotificationsPage(),
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(routes: [

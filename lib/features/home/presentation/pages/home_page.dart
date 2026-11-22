@@ -6,6 +6,7 @@ import 'package:skillswap/features/matching/presentation/widgets/smart_match_ban
 import 'package:skillswap/features/profile/domain/entities/profile_entity.dart';
 import 'package:skillswap/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:skillswap/features/profile/presentation/widgets/profile_avatar.dart';
+import 'package:skillswap/features/notifications/presentation/widgets/notification_bell.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -13,7 +14,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('SkillSwap')),
+      appBar: AppBar(
+        title: const Text('SkillSwap'),
+        actions: const [NotificationBell(), SizedBox(width: 4)],
+      ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         buildWhen: (_, state) => state is! ProfileActionFailed,
         builder: (context, state) {

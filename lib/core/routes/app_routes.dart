@@ -8,6 +8,6 @@ class AppRoutes {
   static const exchanges = '/exchanges';
   static const profile = '/profile';
   static const matches = '/discover/matches';
-
+  static const notifications = '/home/notifications';
   static String userProfile(String uid) => '$discover/user/$uid';
 }

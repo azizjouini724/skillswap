@@ -35,6 +35,8 @@ class ExchangeEntity extends Equatable {
   bool isSender(String uid) => uid == senderId;
 
   String otherName(String uid) => isSender(uid) ? receiverName : senderName;
+  String otherId(String uid) => isSender(uid) ? receiverId : senderId;
+  String nameOf(String uid) => isSender(uid) ? senderName : receiverName;
 
   /// Ce que `uid` enseigne / apprend dans cet échange.
   String teachOf(String uid) => isSender(uid) ? offeredSkill : requestedSkill;
