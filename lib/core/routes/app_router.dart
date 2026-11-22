@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skillswap/core/routes/app_routes.dart';
 import 'package:skillswap/core/routes/go_router_refresh_stream.dart';
-import 'package:skillswap/core/widgets/placeholder_page.dart';
 import 'package:skillswap/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillswap/features/auth/presentation/pages/login_page.dart';
 import 'package:skillswap/features/auth/presentation/pages/register_page.dart';
@@ -11,6 +10,7 @@ import 'package:skillswap/features/discover/presentation/pages/discover_page.dar
 import 'package:skillswap/features/discover/presentation/pages/public_profile_page.dart';
 import 'package:skillswap/features/home/presentation/pages/home_page.dart';
 import 'package:skillswap/features/home/presentation/pages/main_shell.dart';
+import 'package:skillswap/features/exchanges/presentation/pages/exchanges_page.dart';
 import 'package:skillswap/features/profile/presentation/pages/profile_page.dart';
 import 'package:skillswap/features/matching/presentation/pages/smart_match_page.dart';
 GoRouter createRouter(AuthBloc authBloc) {
@@ -84,13 +84,9 @@ GoRouter createRouter(AuthBloc authBloc) {
             ),
           ]),
           StatefulShellBranch(routes: [
-            GoRoute(
+          GoRoute(
               path: AppRoutes.exchanges,
-              builder: (context, state) => const PlaceholderPage(
-                title: 'Exchanges',
-                icon: Icons.swap_horizontal_circle_rounded,
-                message: 'Requests and sessions arrive on day 5',
-              ),
+              builder: (context, state) => const ExchangesPage(),
             ),
           ]),
           StatefulShellBranch(routes: [

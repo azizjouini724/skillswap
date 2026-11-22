@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:skillswap/core/routes/app_routes.dart';
 import 'package:skillswap/features/discover/presentation/bloc/discover_bloc.dart';
+import 'package:skillswap/features/exchanges/domain/entities/exchange_entity.dart';
+import 'package:skillswap/features/exchanges/presentation/bloc/exchange_bloc.dart';
+import 'package:skillswap/features/exchanges/presentation/widgets/request_exchange_sheet.dart';
 import 'package:skillswap/features/profile/domain/entities/profile_entity.dart';
+import 'package:skillswap/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:skillswap/features/profile/presentation/widgets/profile_avatar.dart';
 import 'package:skillswap/features/skills/presentation/widgets/skills_card.dart';
 
@@ -35,6 +41,27 @@ class PublicProfilePage extends StatelessWidget {
 class _Content extends StatelessWidget {
   final ProfileEntity profile;
   const _Content({required this.profile});
+
+  Future<void> _request(BuildContext context) async {
+    final me = context.read<ProfileBloc>().profile;
+    if (me == null) return;
+
+    final draft = await showModalBottomSheet<RequestDraft>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => RequestExchangeSheet(me: me, other: profile),
+    );
+    if (draft != null && context.mounted) {
+      context.read<ExchangeBloc>().add(ExchangeRequested(
+            me: me,
+            other: profile,
+            offeredSkill: draft.offered,
+            requestedSkill: draft.requested,
+            message: draft.message,
+          ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,15 +132,43 @@ class _Content extends StatelessWidget {
                 filled: false,
               ),
               const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Exchange requests arrive in the next step'),
-                  ),
-                ),
-                icon: const Icon(Icons.swap_horiz_rounded),
-                label: const Text('Request an exchange'),
-                style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+              BlocBuilder<ExchangeBloc, ExchangeState>(
+                buildWhen: (_, state) => state is! ExchangeNotice,
+                builder: (context, state) {
+                  final Iterable<ExchangeEntity> active = state is ExchangeLoaded
+                      ? state.exchanges.where((e) =>
+                          e.involves(profile.uid) &&
+                          (e.isPending || e.isAccepted))
+                      : const <ExchangeEntity>[];
+                  final pending = active.any((e) => e.isPending);
+                  final accepted = active.any((e) => e.isAccepted);
+
+                  if (pending) {
+                    return ElevatedButton.icon(
+                      onPressed: null,
+                      icon: const Icon(Icons.hourglass_top_rounded),
+                      label: const Text('Request pending'),
+                      style:
+                          ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                    );
+                  }
+                  if (accepted) {
+                    return ElevatedButton.icon(
+                      onPressed: () => context.go(AppRoutes.exchanges),
+                      icon: const Icon(Icons.swap_horizontal_circle_rounded),
+                      label: const Text('View exchange'),
+                      style:
+                          ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                    );
+                  }
+                  return ElevatedButton.icon(
+                    onPressed: () => _request(context),
+                    icon: const Icon(Icons.swap_horiz_rounded),
+                    label: const Text('Request an exchange'),
+                    style:
+                        ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                  );
+                },
               ),
             ],
           ),

@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skillswap/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillswap/features/discover/presentation/bloc/discover_bloc.dart';
+import 'package:skillswap/features/exchanges/presentation/bloc/exchange_bloc.dart';
+import 'package:skillswap/features/matching/presentation/bloc/match_bloc.dart';
 import 'package:skillswap/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:skillswap/injection_container.dart';
-import 'package:skillswap/features/matching/presentation/bloc/match_bloc.dart';
 
 class MainShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -24,37 +25,71 @@ class MainShell extends StatelessWidget {
           create: (_) => sl<DiscoverBloc>()..add(DiscoverRequested(uid)),
         ),
         BlocProvider(create: (_) => sl<MatchBloc>()),
+        BlocProvider(
+          create: (_) => sl<ExchangeBloc>()..add(ExchangesStarted(uid)),
+        ),
       ],
-      child: Scaffold(
-        body: navigationShell,
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: navigationShell.currentIndex,
-          onDestinationSelected: (index) => navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
+      // Un seul écouteur pour les messages d'actions des échanges.
+      child: BlocListener<ExchangeBloc, ExchangeState>(
+        listenWhen: (_, state) => state is ExchangeNotice,
+        listener: (context, state) {
+          if (state is ExchangeNotice) {
+            final messenger = ScaffoldMessenger.of(context);
+            messenger.hideCurrentSnackBar();
+            messenger.showSnackBar(SnackBar(
+              content: Text(state.message),
+              backgroundColor:
+                  state.isError ? Theme.of(context).colorScheme.error : null,
+            ));
+          }
+        },
+        child: Scaffold(
+          body: navigationShell,
+          bottomNavigationBar: BlocBuilder<ExchangeBloc, ExchangeState>(
+            buildWhen: (_, state) => state is! ExchangeNotice,
+            builder: (context, state) {
+              final pending =
+                  state is ExchangeLoaded ? state.pendingReceived(uid) : 0;
+
+              return NavigationBar(
+                selectedIndex: navigationShell.currentIndex,
+                onDestinationSelected: (index) => navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                ),
+                destinations: [
+                  const NavigationDestination(
+                    icon: Icon(Icons.home_outlined),
+                    selectedIcon: Icon(Icons.home_rounded),
+                    label: 'Home',
+                  ),
+                  const NavigationDestination(
+                    icon: Icon(Icons.explore_outlined),
+                    selectedIcon: Icon(Icons.explore_rounded),
+                    label: 'Discover',
+                  ),
+                  NavigationDestination(
+                    icon: Badge(
+                      isLabelVisible: pending > 0,
+                      label: Text('$pending'),
+                      child: const Icon(Icons.swap_horiz_rounded),
+                    ),
+                    selectedIcon: Badge(
+                      isLabelVisible: pending > 0,
+                      label: Text('$pending'),
+                      child: const Icon(Icons.swap_horizontal_circle_rounded),
+                    ),
+                    label: 'Exchanges',
+                  ),
+                  const NavigationDestination(
+                    icon: Icon(Icons.person_outline_rounded),
+                    selectedIcon: Icon(Icons.person_rounded),
+                    label: 'Profile',
+                  ),
+                ],
+              );
+            },
           ),
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home_rounded),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.explore_outlined),
-              selectedIcon: Icon(Icons.explore_rounded),
-              label: 'Discover',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.swap_horiz_rounded),
-              selectedIcon: Icon(Icons.swap_horizontal_circle_rounded),
-              label: 'Exchanges',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outline_rounded),
-              selectedIcon: Icon(Icons.person_rounded),
-              label: 'Profile',
-            ),
-          ],
         ),
       ),
     );

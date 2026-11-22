@@ -32,7 +32,17 @@ import 'features/discover/domain/usecases/get_discover_profiles_usecase.dart';
 import 'features/discover/presentation/bloc/discover_bloc.dart';
 import 'features/matching/domain/usecases/get_matches_usecase.dart';
 import 'features/matching/presentation/bloc/match_bloc.dart';
-
+import 'features/exchanges/data/datasources/exchange_remote_datasource.dart';
+import 'features/exchanges/data/repositories/exchange_repository_impl.dart';
+import 'features/exchanges/domain/repositories/exchange_repository.dart';
+import 'features/exchanges/domain/usecases/propose_session_usecase.dart';
+import 'features/exchanges/domain/usecases/send_exchange_request_usecase.dart';
+import 'features/exchanges/domain/usecases/update_exchange_status_usecase.dart';
+import 'features/exchanges/domain/usecases/update_session_status_usecase.dart';
+import 'features/exchanges/domain/usecases/watch_exchanges_usecase.dart';
+import 'features/exchanges/domain/usecases/watch_sessions_usecase.dart';
+import 'features/exchanges/presentation/bloc/exchange_bloc.dart';
+import 'package:skillswap/features/exchanges/domain/usecases/counter_propose_session_usecase.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -121,5 +131,34 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetMatchesUseCase(sl<DiscoverRepository>()));
   sl.registerFactory<MatchBloc>(
     () => MatchBloc(getMatches: sl<GetMatchesUseCase>()),
+  );
+    // Exchanges
+  sl.registerLazySingleton<ExchangeRemoteDataSource>(
+    () => ExchangeRemoteDataSourceImpl(sl<FirebaseFirestore>()),
+  );
+  sl.registerLazySingleton<ExchangeRepository>(
+    () => ExchangeRepositoryImpl(sl<ExchangeRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(() => WatchExchangesUseCase(sl<ExchangeRepository>()));
+  sl.registerLazySingleton(() => WatchSessionsUseCase(sl<ExchangeRepository>()));
+  sl.registerLazySingleton(
+      () => SendExchangeRequestUseCase(sl<ExchangeRepository>()));
+  sl.registerLazySingleton(
+      () => UpdateExchangeStatusUseCase(sl<ExchangeRepository>()));
+  sl.registerLazySingleton(() => ProposeSessionUseCase(sl<ExchangeRepository>()));
+  sl.registerLazySingleton(
+      () => UpdateSessionStatusUseCase(sl<ExchangeRepository>()));
+  sl.registerLazySingleton(
+      () => CounterProposeSessionUseCase(sl<ExchangeRepository>()));
+  sl.registerFactory<ExchangeBloc>(
+    () => ExchangeBloc(
+      watchExchanges: sl<WatchExchangesUseCase>(),
+      watchSessions: sl<WatchSessionsUseCase>(),
+      sendRequest: sl<SendExchangeRequestUseCase>(),
+      updateExchangeStatus: sl<UpdateExchangeStatusUseCase>(),
+      proposeSession: sl<ProposeSessionUseCase>(),
+      updateSessionStatus: sl<UpdateSessionStatusUseCase>(),
+      counterProposeSession: sl<CounterProposeSessionUseCase>(),
+    ),
   );
 }
