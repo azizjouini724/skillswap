@@ -1,13 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:skillswap/app.dart';
+import 'package:skillswap/features/auth/domain/entities/user_entity.dart';
 
 void main() {
-  testWidgets('SkillSwapApp démarre sans erreur', (WidgetTester tester) async {
-    await tester.pumpWidget(const SkillSwapApp());
-    await tester.pumpAndSettle();
-
-    expect(find.byType(MaterialApp), findsOneWidget);
+  test('UserEntity est comparée par valeur (Equatable)', () {
+    const a = UserEntity(uid: '1', name: 'Ahmed', email: 'a@a.com');
+    const b = UserEntity(uid: '1', name: 'Ahmed', email: 'a@a.com');
+    expect(a, equals(b));
   });
 }

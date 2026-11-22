@@ -5,7 +5,9 @@ class AuthService {
   AuthService(this._auth);
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
+  Stream<User?> get userChanges => _auth.userChanges();
   User? get currentUser => _auth.currentUser;
+  
 
   Future<UserCredential> signInWithEmailAndPassword({
     required String email,
