@@ -13,6 +13,9 @@ import 'package:skillswap/features/settings/presentation/widgets/appearance_shee
 import 'package:skillswap/features/settings/presentation/widgets/settings_tile.dart';
 import 'package:skillswap/features/skills/domain/entities/skill_type.dart';
 import 'package:skillswap/features/skills/presentation/widgets/skill_chip.dart';
+import 'package:go_router/go_router.dart';
+import 'package:skillswap/core/routes/app_routes.dart';
+import 'package:skillswap/features/credits/presentation/bloc/credits_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -235,6 +238,18 @@ class _ProfileContent extends StatelessWidget {
               const _SectionLabel('Settings'),
               const SizedBox(height: 8),
               SettingsGroup(children: [
+                BlocBuilder<CreditsBloc, CreditsState>(
+                  builder: (context, state) {
+                    final balance =
+                        state is CreditsLoaded ? state.balance : null;
+                    return SettingsTile(
+                      icon: Icons.stars_rounded,
+                      title: 'Your credits',
+                      subtitle: balance == null ? null : '$balance credits',
+                      onTap: () => context.push(AppRoutes.credits),
+                    );
+                  },
+                ),
                 SettingsTile(
                   icon: Icons.palette_outlined,
                   title: 'Appearance',

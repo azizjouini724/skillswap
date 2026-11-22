@@ -10,6 +10,7 @@ class AppRoutes {
   static const matches = '/discover/matches';
   static const notifications = '/home/notifications';
   static const messages = '/messages';
+  static const credits = '/profile/credits';
 
   static String chat(String otherUid, String name) => Uri(
         path: '$messages/chat/$otherUid',

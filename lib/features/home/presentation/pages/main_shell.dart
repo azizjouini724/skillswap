@@ -9,7 +9,7 @@ import 'package:skillswap/features/matching/presentation/bloc/match_bloc.dart';
 import 'package:skillswap/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:skillswap/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:skillswap/injection_container.dart';
-
+import 'package:skillswap/features/credits/presentation/bloc/credits_bloc.dart';
 class MainShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
   const MainShell({super.key, required this.navigationShell});
@@ -36,6 +36,9 @@ class MainShell extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => sl<ChatListBloc>()..add(ChatListStarted(uid)),
+        ),
+        BlocProvider(
+          create: (_) => sl<CreditsBloc>()..add(CreditsStarted(uid)),
         ),
       ],
       // Un seul écouteur pour les messages d'actions des échanges.

@@ -16,6 +16,7 @@ import 'package:skillswap/features/matching/presentation/pages/smart_match_page.
 import 'package:skillswap/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:skillswap/features/chat/presentation/pages/chat_page.dart';
 import 'package:skillswap/features/chat/presentation/pages/chats_page.dart';
+import 'package:skillswap/features/credits/presentation/pages/credits_page.dart';
 
 GoRouter createRouter(AuthBloc authBloc) {
   return GoRouter(
@@ -115,9 +116,15 @@ GoRouter createRouter(AuthBloc authBloc) {
             ),
           ]),
           StatefulShellBranch(routes: [
-            GoRoute(
+              GoRoute(
               path: AppRoutes.profile,
               builder: (context, state) => const ProfilePage(),
+              routes: [
+                GoRoute(
+                  path: 'credits',
+                  builder: (context, state) => const CreditsPage(),
+                ),
+              ],
             ),
           ]),
         ],

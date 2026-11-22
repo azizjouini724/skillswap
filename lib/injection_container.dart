@@ -61,6 +61,11 @@ import 'features/chat/domain/usecases/watch_chats_usecase.dart';
 import 'features/chat/domain/usecases/watch_messages_usecase.dart';
 import 'features/chat/presentation/bloc/chat_list_bloc.dart';
 import 'features/chat/presentation/bloc/chat_room_bloc.dart';
+import 'features/credits/data/datasources/credits_remote_datasource.dart';
+import 'features/credits/data/repositories/credits_repository_impl.dart';
+import 'features/credits/domain/repositories/credits_repository.dart';
+import 'features/credits/domain/usecases/credits_usecases.dart';
+import 'features/credits/presentation/bloc/credits_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -222,6 +227,25 @@ Future<void> init() async {
       watchMessages: sl<WatchMessagesUseCase>(),
       sendMessage: sl<SendMessageUseCase>(),
       markChatRead: sl<MarkChatReadUseCase>(),
+    ),
+  );
+    // Credits
+  sl.registerLazySingleton<CreditsRemoteDataSource>(
+    () => CreditsRemoteDataSourceImpl(sl<FirebaseFirestore>()),
+  );
+  sl.registerLazySingleton<CreditsRepository>(
+    () => CreditsRepositoryImpl(sl<CreditsRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(() => WatchTransactionsUseCase(sl<CreditsRepository>()));
+  sl.registerLazySingleton(() => WatchCompletedSessionsUseCase(sl<CreditsRepository>()));
+  sl.registerLazySingleton(() => ClaimProfileBonusUseCase(sl<CreditsRepository>()));
+  sl.registerLazySingleton(() => ClaimSessionCreditsUseCase(sl<CreditsRepository>()));
+  sl.registerFactory<CreditsBloc>(
+    () => CreditsBloc(
+      watchTransactions: sl<WatchTransactionsUseCase>(),
+      watchCompletedSessions: sl<WatchCompletedSessionsUseCase>(),
+      claimBonus: sl<ClaimProfileBonusUseCase>(),
+      claimSession: sl<ClaimSessionCreditsUseCase>(),
     ),
   );
 }
