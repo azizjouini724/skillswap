@@ -9,11 +9,20 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final dark = theme.brightness == Brightness.dark;
+    final bg = theme.scaffoldBackgroundColor;
+    final top = Color.alphaBlend(
+      scheme.primary.withValues(alpha: dark ? 0.22 : 0.12),
+      bg,
+    );
+
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFE9E5FB), AppColors.background],
+            colors: [top, bg],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -37,16 +46,12 @@ class WelcomePage extends StatelessWidget {
                 const SizedBox(height: 16),
                 const Text(
                   'SkillSwap',
-                  style: TextStyle(
-                    fontSize: 38,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.text,
-                  ),
+                  style: TextStyle(fontSize: 38, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   'Learn • Teach • Exchange',
-                  style: TextStyle(color: AppColors.textLight, fontSize: 15),
+                  style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 15),
                 ),
                 const Spacer(),
                 const SwapAnimation(),
@@ -54,11 +59,7 @@ class WelcomePage extends StatelessWidget {
                 const Text(
                   'Exchange skills.\nUnlock new opportunities.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.text,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(

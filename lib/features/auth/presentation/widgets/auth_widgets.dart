@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skillswap/core/theme/app_colors.dart';
 
-/// Fond commun : grand cercle lavande qui s'estompe, comme la référence.
+/// Fond commun : grand cercle lavande qui s'estompe.
 class AuthBackground extends StatelessWidget {
   final Widget child;
   const AuthBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final dark = theme.brightness == Brightness.dark;
+
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 480),
@@ -31,8 +34,9 @@ class AuthBackground extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            AppColors.primary.withValues(alpha: 0.30),
-                            AppColors.primary.withValues(alpha: 0.02),
+                            theme.colorScheme.primary
+                                .withValues(alpha: dark ? 0.20 : 0.30),
+                            theme.colorScheme.primary.withValues(alpha: 0.02),
                           ],
                         ),
                       ),
@@ -86,7 +90,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
     );
   }
 
-  Widget? _suffix() {
+  Widget? _suffix(ColorScheme scheme) {
     if (!widget.isPassword && widget.trailing == null) return null;
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -99,7 +103,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   ? Icons.visibility_off_outlined
                   : Icons.visibility_outlined,
               size: 20,
-              color: AppColors.textLight,
+              color: scheme.onSurfaceVariant,
             ),
             onPressed: () => setState(() => _obscure = !_obscure),
           ),
@@ -110,31 +114,31 @@ class _AuthTextFieldState extends State<AuthTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return TextFormField(
       controller: widget.controller,
       obscureText: widget.isPassword && _obscure,
       keyboardType: widget.keyboardType,
       textCapitalization: widget.textCapitalization,
       validator: widget.validator,
-      style: const TextStyle(
-        color: AppColors.text,
-        fontWeight: FontWeight.w500,
-      ),
+      style: const TextStyle(fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         labelText: widget.label,
-        labelStyle: const TextStyle(color: AppColors.textLight),
-        floatingLabelStyle: const TextStyle(color: AppColors.primary),
-        prefixIcon: Icon(widget.icon, color: AppColors.textLight, size: 20),
-        suffixIcon: _suffix(),
+        labelStyle: TextStyle(color: scheme.onSurfaceVariant),
+        floatingLabelStyle: TextStyle(color: scheme.primary),
+        prefixIcon:
+            Icon(widget.icon, color: scheme.onSurfaceVariant, size: 20),
+        suffixIcon: _suffix(scheme),
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.85),
+        fillColor: scheme.surface.withValues(alpha: 0.85),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-        border: _border(AppColors.border),
-        enabledBorder: _border(AppColors.border),
-        focusedBorder: _border(AppColors.primary, 1.6),
-        errorBorder: _border(AppColors.error),
-        focusedErrorBorder: _border(AppColors.error, 1.6),
+        border: _border(scheme.outlineVariant),
+        enabledBorder: _border(scheme.outlineVariant),
+        focusedBorder: _border(scheme.primary, 1.6),
+        errorBorder: _border(scheme.error),
+        focusedErrorBorder: _border(scheme.error, 1.6),
       ),
     );
   }
@@ -207,19 +211,21 @@ class AuthSwitchLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Text(
           '$question ',
-          style: const TextStyle(color: AppColors.textLight, fontSize: 13),
+          style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
         ),
         GestureDetector(
           onTap: onTap,
           child: Text(
             action,
-            style: const TextStyle(
-              color: AppColors.primary,
+            style: TextStyle(
+              color: scheme.primary,
               fontWeight: FontWeight.w800,
               fontSize: 13,
             ),
@@ -236,6 +242,7 @@ class SocialButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     const icons = <FaIconData>[
       FontAwesomeIcons.google,
       FontAwesomeIcons.apple,
@@ -257,7 +264,7 @@ class SocialButtons extends StatelessWidget {
                 width: 46,
                 height: 46,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: scheme.surface,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -268,7 +275,7 @@ class SocialButtons extends StatelessWidget {
                   ],
                 ),
                 child: Center(
-                  child: FaIcon(icon, size: 18, color: AppColors.primary),
+                  child: FaIcon(icon, size: 18, color: scheme.primary),
                 ),
               ),
             ),

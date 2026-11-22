@@ -19,3 +19,7 @@ class AuthFailure extends Failure {
 class NetworkFailure extends Failure {
   const NetworkFailure([super.message = 'Pas de connexion internet']);
 }
+
+class ValidationFailure extends Failure {
+  const ValidationFailure(super.message);
+}

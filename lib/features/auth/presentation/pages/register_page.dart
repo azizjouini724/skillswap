@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skillswap/core/routes/app_routes.dart';
-import 'package:skillswap/core/theme/app_colors.dart';
 import 'package:skillswap/core/utils/validators.dart';
 import 'package:skillswap/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillswap/features/auth/presentation/widgets/auth_widgets.dart';
@@ -40,7 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
@@ -68,7 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               style: TextStyle(
                                 fontSize: 34,
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.text,
+                        
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -121,7 +120,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     left: 8,
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                          size: 20, color: AppColors.text),
+                          size: 20,),
                       onPressed: () => context.go(AppRoutes.welcome),
                     ),
                   ),

@@ -2,33 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skillswap/core/theme/app_colors.dart';
 import 'package:skillswap/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:skillswap/features/profile/presentation/bloc/profile_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        final user = context.read<AuthBloc>().currentUser;
+        final name = state is ProfileLoaded
+            ? state.profile.name
+            : (context.read<AuthBloc>().currentUser?.name ?? '');
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('SkillSwap'),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.logout_rounded),
-                tooltip: 'Se déconnecter',
-                onPressed: () =>
-                    context.read<AuthBloc>().add(const SignOutRequested()),
-              ),
-            ],
-          ),
+          appBar: AppBar(title: const Text('SkillSwap')),
           body: Center(
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Hello ${user?.name ?? ''}',
+                  'Hello $name',
                   style: const TextStyle(
                       fontSize: 28, fontWeight: FontWeight.bold),
                 ),

@@ -1,0 +1,1 @@
+enum SkillType { teach, learn }
