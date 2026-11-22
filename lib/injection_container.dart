@@ -30,6 +30,9 @@ import 'features/discover/data/repositories/discover_repository_impl.dart';
 import 'features/discover/domain/repositories/discover_repository.dart';
 import 'features/discover/domain/usecases/get_discover_profiles_usecase.dart';
 import 'features/discover/presentation/bloc/discover_bloc.dart';
+import 'features/matching/domain/usecases/get_matches_usecase.dart';
+import 'features/matching/presentation/bloc/match_bloc.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -113,5 +116,10 @@ Future<void> init() async {
   );
   sl.registerFactory<DiscoverBloc>(
     () => DiscoverBloc(getProfiles: sl<GetDiscoverProfilesUseCase>()),
+  );
+    // Matching
+  sl.registerLazySingleton(() => GetMatchesUseCase(sl<DiscoverRepository>()));
+  sl.registerFactory<MatchBloc>(
+    () => MatchBloc(getMatches: sl<GetMatchesUseCase>()),
   );
 }

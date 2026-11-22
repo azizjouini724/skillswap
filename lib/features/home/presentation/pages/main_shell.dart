@@ -5,6 +5,7 @@ import 'package:skillswap/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillswap/features/discover/presentation/bloc/discover_bloc.dart';
 import 'package:skillswap/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:skillswap/injection_container.dart';
+import 'package:skillswap/features/matching/presentation/bloc/match_bloc.dart';
 
 class MainShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -22,6 +23,7 @@ class MainShell extends StatelessWidget {
         BlocProvider(
           create: (_) => sl<DiscoverBloc>()..add(DiscoverRequested(uid)),
         ),
+        BlocProvider(create: (_) => sl<MatchBloc>()),
       ],
       child: Scaffold(
         body: navigationShell,

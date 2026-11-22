@@ -12,7 +12,7 @@ import 'package:skillswap/features/discover/presentation/pages/public_profile_pa
 import 'package:skillswap/features/home/presentation/pages/home_page.dart';
 import 'package:skillswap/features/home/presentation/pages/main_shell.dart';
 import 'package:skillswap/features/profile/presentation/pages/profile_page.dart';
-
+import 'package:skillswap/features/matching/presentation/pages/smart_match_page.dart';
 GoRouter createRouter(AuthBloc authBloc) {
   return GoRouter(
     initialLocation: AppRoutes.splash,
@@ -69,7 +69,11 @@ GoRouter createRouter(AuthBloc authBloc) {
             GoRoute(
               path: AppRoutes.discover,
               builder: (context, state) => const DiscoverPage(),
-              routes: [
+                            routes: [
+                GoRoute(
+                  path: 'matches',
+                  builder: (context, state) => const SmartMatchPage(),
+                ),
                 GoRoute(
                   path: 'user/:uid',
                   builder: (context, state) => PublicProfilePage(

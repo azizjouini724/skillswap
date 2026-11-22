@@ -9,7 +9,7 @@ import 'package:skillswap/features/discover/presentation/bloc/discover_bloc.dart
 import 'package:skillswap/features/discover/presentation/widgets/discover_profile_card.dart';
 import 'package:skillswap/features/skills/domain/entities/skill_catalog.dart';
 import 'package:skillswap/features/skills/presentation/widgets/skill_icons.dart';
-
+import 'package:skillswap/features/matching/presentation/widgets/smart_match_banner.dart';
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({super.key});
 
@@ -70,6 +70,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       'Discover',
                       style:
                           TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
+                    child: SmartMatchBanner(
+                      onTap: () => context.push(AppRoutes.matches),
                     ),
                   ),
                   Padding(
