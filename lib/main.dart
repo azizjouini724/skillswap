@@ -1,21 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'firebase_options.dart';
+import 'app.dart';
+import 'injection_container.dart' as di;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: Scaffold(
-      body: Center(
-        child: Text(
-          'Firebase OK ✅',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        ),
-      ),
-    ),
-  ));
+  await di.init();
+  runApp(const SkillSwapApp());
 }
