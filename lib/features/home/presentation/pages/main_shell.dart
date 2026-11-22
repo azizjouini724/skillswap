@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skillswap/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:skillswap/features/discover/presentation/bloc/discover_bloc.dart';
 import 'package:skillswap/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:skillswap/injection_container.dart';
 
@@ -13,8 +14,15 @@ class MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final uid = context.read<AuthBloc>().currentUser?.uid ?? '';
 
-    return BlocProvider(
-      create: (_) => sl<ProfileBloc>()..add(ProfileStarted(uid)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => sl<ProfileBloc>()..add(ProfileStarted(uid)),
+        ),
+        BlocProvider(
+          create: (_) => sl<DiscoverBloc>()..add(DiscoverRequested(uid)),
+        ),
+      ],
       child: Scaffold(
         body: navigationShell,
         bottomNavigationBar: NavigationBar(

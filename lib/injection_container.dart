@@ -25,7 +25,11 @@ import 'features/profile/domain/usecases/watch_profile_usecase.dart';
 import 'features/profile/presentation/bloc/profile_bloc.dart';
 import 'features/settings/presentation/bloc/theme_bloc.dart';
 import 'firebase_options.dart';
-
+import 'features/discover/data/datasources/discover_remote_datasource.dart';
+import 'features/discover/data/repositories/discover_repository_impl.dart';
+import 'features/discover/domain/repositories/discover_repository.dart';
+import 'features/discover/domain/usecases/get_discover_profiles_usecase.dart';
+import 'features/discover/presentation/bloc/discover_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -96,5 +100,18 @@ Future<void> init() async {
       removeSkill: sl<RemoveSkillUseCase>(),
       updatePhoto: sl<UpdatePhotoUseCase>(),
     ),
+  );
+    // Discover
+  sl.registerLazySingleton<DiscoverRemoteDataSource>(
+    () => DiscoverRemoteDataSourceImpl(sl<FirebaseFirestore>()),
+  );
+  sl.registerLazySingleton<DiscoverRepository>(
+    () => DiscoverRepositoryImpl(sl<DiscoverRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(
+    () => GetDiscoverProfilesUseCase(sl<DiscoverRepository>()),
+  );
+  sl.registerFactory<DiscoverBloc>(
+    () => DiscoverBloc(getProfiles: sl<GetDiscoverProfilesUseCase>()),
   );
 }

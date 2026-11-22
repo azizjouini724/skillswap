@@ -7,6 +7,8 @@ import 'package:skillswap/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:skillswap/features/auth/presentation/pages/login_page.dart';
 import 'package:skillswap/features/auth/presentation/pages/register_page.dart';
 import 'package:skillswap/features/auth/presentation/pages/welcome_page.dart';
+import 'package:skillswap/features/discover/presentation/pages/discover_page.dart';
+import 'package:skillswap/features/discover/presentation/pages/public_profile_page.dart';
 import 'package:skillswap/features/home/presentation/pages/home_page.dart';
 import 'package:skillswap/features/home/presentation/pages/main_shell.dart';
 import 'package:skillswap/features/profile/presentation/pages/profile_page.dart';
@@ -66,11 +68,15 @@ GoRouter createRouter(AuthBloc authBloc) {
           StatefulShellBranch(routes: [
             GoRoute(
               path: AppRoutes.discover,
-              builder: (context, state) => const PlaceholderPage(
-                title: 'Discover',
-                icon: Icons.explore_rounded,
-                message: 'Search and filters arrive on day 3',
-              ),
+              builder: (context, state) => const DiscoverPage(),
+              routes: [
+                GoRoute(
+                  path: 'user/:uid',
+                  builder: (context, state) => PublicProfilePage(
+                    uid: state.pathParameters['uid']!,
+                  ),
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(routes: [

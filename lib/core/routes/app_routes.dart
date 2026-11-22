@@ -7,4 +7,6 @@ class AppRoutes {
   static const discover = '/discover';
   static const exchanges = '/exchanges';
   static const profile = '/profile';
+
+  static String userProfile(String uid) => '$discover/user/$uid';
 }
