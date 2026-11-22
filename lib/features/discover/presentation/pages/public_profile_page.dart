@@ -170,6 +170,17 @@ class _Content extends StatelessWidget {
                   );
                 },
               ),
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                onPressed: () =>
+                    context.go(AppRoutes.chat(profile.uid, profile.name)),
+                icon: const Icon(Icons.chat_bubble_outline_rounded),
+                label: const Text('Message'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  shape: const StadiumBorder(),
+                ),
+              ),
             ],
           ),
         ),

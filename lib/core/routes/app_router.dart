@@ -14,6 +14,9 @@ import 'package:skillswap/features/exchanges/presentation/pages/exchanges_page.d
 import 'package:skillswap/features/profile/presentation/pages/profile_page.dart';
 import 'package:skillswap/features/matching/presentation/pages/smart_match_page.dart';
 import 'package:skillswap/features/notifications/presentation/pages/notifications_page.dart';
+import 'package:skillswap/features/chat/presentation/pages/chat_page.dart';
+import 'package:skillswap/features/chat/presentation/pages/chats_page.dart';
+
 GoRouter createRouter(AuthBloc authBloc) {
   return GoRouter(
     initialLocation: AppRoutes.splash,
@@ -85,6 +88,21 @@ GoRouter createRouter(AuthBloc authBloc) {
                   path: 'user/:uid',
                   builder: (context, state) => PublicProfilePage(
                     uid: state.pathParameters['uid']!,
+                  ),
+                ),
+              ],
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: AppRoutes.messages,
+              builder: (context, state) => const ChatsPage(),
+              routes: [
+                GoRoute(
+                  path: 'chat/:otherUid',
+                  builder: (context, state) => ChatPage(
+                    otherUid: state.pathParameters['otherUid']!,
+                    otherName: state.uri.queryParameters['name'] ?? 'Chat',
                   ),
                 ),
               ],

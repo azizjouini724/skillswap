@@ -50,6 +50,17 @@ import 'features/notifications/domain/usecases/create_notification_usecase.dart'
 import 'features/notifications/domain/usecases/mark_notifications_read_usecase.dart';
 import 'features/notifications/domain/usecases/watch_notifications_usecase.dart';
 import 'features/notifications/presentation/bloc/notification_bloc.dart';
+import 'features/chat/data/datasources/chat_remote_datasource.dart';
+import 'features/chat/data/repositories/chat_repository_impl.dart';
+import 'features/chat/domain/repositories/chat_repository.dart';
+import 'features/chat/domain/usecases/mark_chat_read_usecase.dart';
+import 'features/chat/domain/usecases/open_chat_usecase.dart';
+import 'features/chat/domain/usecases/send_message_usecase.dart';
+import 'features/chat/domain/usecases/watch_chat_usecase.dart';
+import 'features/chat/domain/usecases/watch_chats_usecase.dart';
+import 'features/chat/domain/usecases/watch_messages_usecase.dart';
+import 'features/chat/presentation/bloc/chat_list_bloc.dart';
+import 'features/chat/presentation/bloc/chat_room_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -186,6 +197,31 @@ Future<void> init() async {
     () => NotificationBloc(
       watchNotifications: sl<WatchNotificationsUseCase>(),
       markRead: sl<MarkNotificationsReadUseCase>(),
+    ),
+  );
+    // Chat
+  sl.registerLazySingleton<ChatRemoteDataSource>(
+    () => ChatRemoteDataSourceImpl(sl<FirebaseFirestore>()),
+  );
+  sl.registerLazySingleton<ChatRepository>(
+    () => ChatRepositoryImpl(sl<ChatRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(() => WatchChatsUseCase(sl<ChatRepository>()));
+  sl.registerLazySingleton(() => WatchChatUseCase(sl<ChatRepository>()));
+  sl.registerLazySingleton(() => WatchMessagesUseCase(sl<ChatRepository>()));
+  sl.registerLazySingleton(() => OpenChatUseCase(sl<ChatRepository>()));
+  sl.registerLazySingleton(() => SendMessageUseCase(sl<ChatRepository>()));
+  sl.registerLazySingleton(() => MarkChatReadUseCase(sl<ChatRepository>()));
+  sl.registerFactory<ChatListBloc>(
+    () => ChatListBloc(watchChats: sl<WatchChatsUseCase>()),
+  );
+  sl.registerFactory<ChatRoomBloc>(
+    () => ChatRoomBloc(
+      openChat: sl<OpenChatUseCase>(),
+      watchChat: sl<WatchChatUseCase>(),
+      watchMessages: sl<WatchMessagesUseCase>(),
+      sendMessage: sl<SendMessageUseCase>(),
+      markChatRead: sl<MarkChatReadUseCase>(),
     ),
   );
 }
