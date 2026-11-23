@@ -16,6 +16,9 @@ import 'package:skillswap/features/skills/presentation/widgets/skill_chip.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skillswap/core/routes/app_routes.dart';
 import 'package:skillswap/features/credits/presentation/bloc/credits_bloc.dart';
+import 'package:skillswap/features/exchanges/presentation/bloc/exchange_bloc.dart';
+import 'package:skillswap/features/stats/domain/usecases/stats_calculator.dart';
+import 'package:skillswap/features/stats/presentation/widgets/stats_card.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -222,6 +225,21 @@ class _ProfileContent extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _CompletionCard(profile: profile),
+              const SizedBox(height: 16),
+              BlocBuilder<ExchangeBloc, ExchangeState>(
+                buildWhen: (_, state) => state is! ExchangeNotice,
+                builder: (context, state) {
+                  final loaded = state is ExchangeLoaded ? state : null;
+                  return StatsCard(
+                    stats: StatsCalculator.compute(
+                      uid: profile.uid,
+                      profile: profile,
+                      exchanges: loaded?.exchanges ?? const [],
+                      sessions: loaded?.sessions ?? const [],
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: 16),
               _SkillSection(
                 type: SkillType.teach,

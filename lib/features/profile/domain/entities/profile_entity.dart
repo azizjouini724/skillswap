@@ -12,7 +12,7 @@ class ProfileEntity extends Equatable {
   final String? photoUrl;
   final List<String> skillsToTeach;
   final List<String> skillsToLearn;
-
+  final DateTime? lastSeen;
   const ProfileEntity({
     required this.uid,
     required this.name,
@@ -22,12 +22,19 @@ class ProfileEntity extends Equatable {
     this.photoUrl,
     this.skillsToTeach = const [],
     this.skillsToLearn = const [],
+    this.lastSeen,
   });
 
   List<String> skillsOf(SkillType type) =>
       type == SkillType.teach ? skillsToTeach : skillsToLearn;
 
   bool get hasBio => bio.trim().isNotEmpty;
+  static const onlineWindow = Duration(minutes: 5);
+
+  bool isOnlineAt(DateTime now) =>
+      lastSeen != null && now.difference(lastSeen!) < onlineWindow;
+
+  bool get isOnline => isOnlineAt(DateTime.now());
   bool get hasEnoughToTeach => skillsToTeach.length >= 2;
   bool get hasEnoughToLearn => skillsToLearn.length >= 2;
 
@@ -45,6 +52,6 @@ class ProfileEntity extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [uid, name, email, bio, city, photoUrl, skillsToTeach, skillsToLearn];
+    List<Object?> get props =>
+      [uid, name, email, bio, city, photoUrl, skillsToTeach, skillsToLearn, lastSeen];
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:skillswap/features/profile/domain/entities/profile_entity.dart';
 
 class ProfileModel extends ProfileEntity {
@@ -10,10 +11,12 @@ class ProfileModel extends ProfileEntity {
     super.photoUrl,
     super.skillsToTeach,
     super.skillsToLearn,
+    super.lastSeen,
   });
 
   factory ProfileModel.fromMap(Map<String, dynamic> map, String uid) {
     final photo = map['photoUrl'] as String?;
+    final seen = map['lastSeen'];
     return ProfileModel(
       uid: uid,
       name: map['name'] ?? '',
@@ -23,6 +26,7 @@ class ProfileModel extends ProfileEntity {
       photoUrl: (photo == null || photo.isEmpty) ? null : photo,
       skillsToTeach: List<String>.from(map['skillsToTeach'] ?? const []),
       skillsToLearn: List<String>.from(map['skillsToLearn'] ?? const []),
+      lastSeen: seen is Timestamp ? seen.toDate() : null,
     );
   }
 }

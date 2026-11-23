@@ -23,4 +23,13 @@ class DateFmt {
   static String time(DateTime d) => '${_two(d.hour)}:${_two(d.minute)}';
 
   static String dateTime(DateTime d) => '${date(d)}, ${time(d)}';
+  /// "Online", "Last seen 12 min ago"... ou null si jamais vu.
+  static String? lastSeen(DateTime? time, {DateTime? now}) {
+    if (time == null) return null;
+    final diff = (now ?? DateTime.now()).difference(time);
+    if (diff.inMinutes < 5) return 'Online';
+    if (diff.inMinutes < 60) return 'Last seen ${diff.inMinutes} min ago';
+    if (diff.inHours < 24) return 'Last seen ${diff.inHours} h ago';
+    return 'Last seen ${diff.inDays} d ago';
+  }
 }

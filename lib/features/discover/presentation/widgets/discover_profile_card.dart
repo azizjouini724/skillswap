@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skillswap/features/profile/domain/entities/profile_entity.dart';
-import 'package:skillswap/features/profile/presentation/widgets/profile_avatar.dart';
 import 'package:skillswap/features/skills/presentation/widgets/skill_chip.dart';
-
+import 'package:skillswap/features/profile/presentation/widgets/presence_widgets.dart';
 class DiscoverProfileCard extends StatelessWidget {
   final ProfileEntity profile;
   final VoidCallback onTap;
@@ -29,11 +28,7 @@ class DiscoverProfileCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  ProfileAvatar(
-                    photoUrl: profile.photoUrl,
-                    initials: profile.initials,
-                    radius: 28,
-                  ),
+                  AvatarWithStatus(profile: profile, radius: 28),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
@@ -46,6 +41,7 @@ class DiscoverProfileCard extends StatelessWidget {
                           style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w800),
                         ),
+                        LastSeenText(profile: profile),
                         if (profile.city.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 3),

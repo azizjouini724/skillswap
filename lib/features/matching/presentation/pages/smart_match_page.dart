@@ -8,7 +8,7 @@ import 'package:skillswap/features/matching/presentation/bloc/match_bloc.dart';
 import 'package:skillswap/features/matching/presentation/widgets/match_card.dart';
 import 'package:skillswap/features/profile/domain/entities/profile_entity.dart';
 import 'package:skillswap/features/profile/presentation/bloc/profile_bloc.dart';
-
+import 'package:flutter/foundation.dart';
 class SmartMatchPage extends StatelessWidget {
   const SmartMatchPage({super.key});
 
@@ -53,9 +53,10 @@ class _MatchViewState extends State<_MatchView> {
   @override
   void didUpdateWidget(covariant _MatchView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final changed =
-        oldWidget.profile.skillsToTeach != widget.profile.skillsToTeach ||
-            oldWidget.profile.skillsToLearn != widget.profile.skillsToLearn;
+    final changed = !listEquals(
+        oldWidget.profile.skillsToTeach, widget.profile.skillsToTeach) ||
+      !listEquals(
+        oldWidget.profile.skillsToLearn, widget.profile.skillsToLearn);
     if (changed && _ready) _load();
   }
 

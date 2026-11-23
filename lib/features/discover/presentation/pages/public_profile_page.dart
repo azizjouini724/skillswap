@@ -8,9 +8,8 @@ import 'package:skillswap/features/exchanges/presentation/bloc/exchange_bloc.dar
 import 'package:skillswap/features/exchanges/presentation/widgets/request_exchange_sheet.dart';
 import 'package:skillswap/features/profile/domain/entities/profile_entity.dart';
 import 'package:skillswap/features/profile/presentation/bloc/profile_bloc.dart';
-import 'package:skillswap/features/profile/presentation/widgets/profile_avatar.dart';
 import 'package:skillswap/features/skills/presentation/widgets/skills_card.dart';
-
+import 'package:skillswap/features/profile/presentation/widgets/presence_widgets.dart';
 class PublicProfilePage extends StatelessWidget {
   final String uid;
   const PublicProfilePage({super.key, required this.uid});
@@ -80,11 +79,7 @@ class _Content extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 24, 20, 22),
                   child: Column(
                     children: [
-                      ProfileAvatar(
-                        photoUrl: profile.photoUrl,
-                        initials: profile.initials,
-                        radius: 52,
-                      ),
+                      AvatarWithStatus(profile: profile, radius: 52),
                       const SizedBox(height: 14),
                       Text(
                         profile.name,
@@ -92,6 +87,8 @@ class _Content extends StatelessWidget {
                         style: const TextStyle(
                             fontSize: 22, fontWeight: FontWeight.w800),
                       ),
+                      const SizedBox(height: 4),
+                      LastSeenText(profile: profile),
                       if (profile.city.isNotEmpty) ...[
                         const SizedBox(height: 6),
                         Row(

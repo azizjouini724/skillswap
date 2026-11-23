@@ -66,6 +66,12 @@ import 'features/credits/data/repositories/credits_repository_impl.dart';
 import 'features/credits/domain/repositories/credits_repository.dart';
 import 'features/credits/domain/usecases/credits_usecases.dart';
 import 'features/credits/presentation/bloc/credits_bloc.dart';
+import 'features/presence/data/datasources/presence_remote_datasource.dart';
+import 'features/presence/data/repositories/presence_repository_impl.dart';
+import 'features/presence/domain/repositories/presence_repository.dart';
+import 'features/presence/domain/usecases/touch_presence_usecase.dart';
+
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -248,4 +254,12 @@ Future<void> init() async {
       claimSession: sl<ClaimSessionCreditsUseCase>(),
     ),
   );
+    // Presence
+  sl.registerLazySingleton<PresenceRemoteDataSource>(
+    () => PresenceRemoteDataSourceImpl(sl<FirebaseFirestore>()),
+  );
+  sl.registerLazySingleton<PresenceRepository>(
+    () => PresenceRepositoryImpl(sl<PresenceRemoteDataSource>()),
+  );
+  sl.registerLazySingleton(() => TouchPresenceUseCase(sl<PresenceRepository>()));
 }
